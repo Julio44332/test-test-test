@@ -1,266 +1,422 @@
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Studios Hollywood: An Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A tab-based single-page application. The default view is an 'Explore the Park' section with filterable cards for attractions. Additional tabs for 'Journey Through Time,' 'Shop & Dine,' and 'Plan Your Visit' (for hotels) logically group the report's content. This structure prioritizes user task-orientation (planning a visit, learning history) over the report's linear format, enhancing usability and making information discovery intuitive and efficient. -->
+    <!-- Visualization & Content Choices: History is visualized as an interactive Chart.js line chart to show progression over time; clicking points reveals details. Attractions, shops, and hotels are presented as filterable or categorized grids of cards for easy comparison. This approach uses the best interactive method for each type of content, avoiding static tables and focusing on user engagement. All visualizations are built with Chart.js or HTML/CSS via Tailwind, adhering to the NO SVG/Mermaid constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfcfb;
+            color: #3f3c3a;
+        }
+        .nav-active {
+            border-bottom-color: #f59e0b;
+            color: #f59e0b;
+        }
+        .nav-inactive {
+            border-bottom-color: transparent;
+            color: #78716c;
+        }
+        .filter-active {
+            background-color: #f59e0b;
+            color: #ffffff;
+        }
+        .filter-inactive {
+            background-color: #e7e5e4;
+            color: #3f3c3a;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
 
-        const attractionsData = [
-            { name: "The World-Famous Studio Tour", land: "Studio Tour", type: "Family", lot: "Upper Lot", icon: 'Tram', description: "Go behind the scenes of a real working movie studio. Features King Kong 360 3-D, Fast & Furious – Supercharged, and the Jaws attack." },
-            { name: "Harry Potter and the Forbidden Journey™", land: "The Wizarding World of Harry Potter™", type: "Thrill", lot: "Upper Lot", icon: '⚡', description: "Soar above Hogwarts™ castle on a thrilling adventure, coming face-to-face with magical creatures. A mix of robotic arm technology and rich sets." },
-            { name: "Flight of the Hippogriff™", land: "The Wizarding World of Harry Potter™", type: "Family", lot: "Upper Lot", icon: '🦅', description: "A family-friendly outdoor roller coaster that spirals and dives around the pumpkin patch, and then swoops past Hagrid's hut." },
-            { name: "Despicable Me Minion Mayhem", land: "Minion Land", type: "Family", lot: "Upper Lot", icon: '🍌', description: "Join Gru, his daughters, and the mischievous Minions on a heartwarming and hilarious 3D motion-simulator ride." },
-            { name: "The Secret Life of Pets: Off the Leash!", land: "Minion Land", type: "Family", lot: "Upper Lot", icon: '🐶', description: "A charming dark ride where you become a stray puppy journeying through the streets of NYC to find your forever home." },
-            { name: "The Simpsons Ride™", land: "Springfield, U.S.A.", type: "Thrill", lot: "Upper Lot", icon: '🍩', description: "A wild motion simulator ride through Krustyland. Soar, float, and crash your way through with Homer, Marge, Bart, Lisa, and Maggie." },
-            { name: "WaterWorld", land: "WaterWorld", type: "Show", lot: "Upper Lot", icon: '🌊', description: "A tidal wave of explosive action! This live sea war spectacular features jet-ski stunts, perilous plunges, firefights, and a plane crash you have to see to believe." },
-            { name: "DreamWorks Theatre Featuring Kung Fu Panda", land: "Universal Plaza", type: "Show", lot: "Upper Lot", icon: '🐼', description: "A multi-sensory attraction using state-of-the-art visual effects and cutting-edge technology, including 360-degree surround sound and physical effects." },
-            { name: "Mario Kart™: Bowser's Challenge", land: "SUPER NINTENDO WORLD™", type: "Family", lot: "Lower Lot", icon: '🍄', description: "A groundbreaking augmented reality (AR) dark ride where you steer through iconic courses, collecting digital coins and throwing shells to defeat Team Bowser." },
-            { name: "Jurassic World - The Ride", land: "Jurassic World", type: "Thrill", lot: "Lower Lot", icon: '🦖', description: "A water ride through lush jungles inhabited by dinosaurs, culminating in a face-off with the Indominus Rex and an 84-foot plunge. Prepare to get soaked!" },
-            { name: "TRANSFORMERS™: The Ride-3D", land: "TRANSFORMERS Metrobase", type: "Thrill", lot: "Lower Lot", icon: '🤖', description: "An immersive, next-gen 3D thrill ride that blurs the line between fiction and reality. Battle alongside Optimus Prime to protect the AllSpark." },
-            { name: "Revenge of the Mummy: The Ride", land: "General", type: "Thrill", lot: "Lower Lot", icon: '💀', description: "Plunge into total darkness and face scarab beetles, fireballs, and an army of warrior mummies on this high-speed indoor roller coaster. (Currently closed for refurbishment)." }
-        ];
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-30 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-amber-600">🎬</span>
+                    <h1 class="ml-3 text-xl font-bold tracking-tight text-stone-800">Universal Studios Hollywood</h1>
+                </div>
+                <nav class="hidden md:flex space-x-4">
+                    <button data-tab="explore" class="nav-btn text-sm font-semibold py-2 border-b-2 transition-colors duration-300 nav-active">Explore</button>
+                    <button data-tab="history" class="nav-btn text-sm font-semibold py-2 border-b-2 transition-colors duration-300 nav-inactive">History</button>
+                    <button data-tab="shops" class="nav-btn text-sm font-semibold py-2 border-b-2 transition-colors duration-300 nav-inactive">Shop & Dine</button>
+                    <button data-tab="hotels" class="nav-btn text-sm font-semibold py-2 border-b-2 transition-colors duration-300 nav-inactive">Plan Your Visit</button>
+                </nav>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm">
+                        <option value="explore">Explore</option>
+                        <option value="history">History</option>
+                        <option value="shops">Shop & Dine</option>
+                        <option value="hotels">Plan Your Visit</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
 
-        const historyData = [
-            { year: 1915, event: "Studio Opens to Public", description: "Carl Laemmle opens his studio for public tours, offering a behind-the-scenes look at filmmaking for just 5 cents." },
-            { year: 1930, event: "Original Tour Ends", description: "The first iteration of the public tour is discontinued due to the logistical challenges posed by the advent of sound in films." },
-            { year: 1964, event: "Modern Studio Tour Begins", description: "The modern tram tour is launched, incorporating staged events and marking the true beginning of the theme park experience." },
-            { year: 1991, event: "Lower Lot Expansion", description: "The Lower Lot opens, significantly expanding the park's footprint and connected by a massive series of escalators." },
-            { year: 1996, event: "Jurassic Park—The Ride Opens", description: "Revered as a 'game changer,' this immersive water ride sets new standards for themed attractions with its advanced animatronics." },
-            { year: 2008, event: "Major Backlot Fire", description: "A significant fire destroys two square blocks of the backlot, including the iconic King Kong attraction." },
-            { year: 2016, event: "The Wizarding World Opens", description: "The highly anticipated Wizarding World of Harry Potter opens, setting new standards for immersive themed lands." },
-            { year: 2023, event: "SUPER NINTENDO WORLD™", description: "A highly interactive and immersive land opens, featuring augmented reality rides and gamified experiences with Power-Up Bands." }
-        ];
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <section id="explore" class="tab-content fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">Explore the Park</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">Discover the thrilling rides, captivating shows, and immersive lands of Universal Studios Hollywood. Use the filters below to find your next adventure, whether you're seeking high-octane thrills, family-friendly fun, or a behind-the-scenes look at movie magic.</p>
+            </div>
 
-        const shopData = {
-            citywalk: [
-                { name: "Universal Studios Store", category: "General Merchandise", description: "The main hub for a wide variety of movie and character-inspired apparel, toys, and souvenirs." },
-                { name: "Dodgers Clubhouse Store", category: "Fan Gear", description: "The official store for Los Angeles Dodgers fan gear and apparel." },
-                { name: "LINE FRIENDS SQUARE", category: "Specialty", description: "A vibrant store for BT21, LINE FRIENDS, and K-pop merchandise." },
-                { name: "Sanrio® Smile Shop", category: "Specialty", description: "A supercute destination for sweet treats and merchandise featuring Hello Kitty and friends." },
-                { name: "Voodoo Doughnut", category: "Dining/Specialty", description: "A popular spot for unique and delicious doughnuts, a treat in itself." }
-            ],
-            in_park: [
-                { name: "Ollivanders™", land: "The Wizarding World of Harry Potter™", description: "Experience the magic as a wand chooses a wizard in this iconic, interactive shop." },
-                { name: "Honeydukes™", land: "The Wizarding World of Harry Potter™", description: "A legendary wizarding sweets shop filled with Chocolate Frogs™, Bertie Bott's Every-Flavour Beans™, and more." },
-                { name: "Dervish & Banges™", land: "The Wizarding World of Harry Potter™", description: "Sells magical supplies, Quidditch equipment, and Hogwarts house robes." },
-                { name: "1-UP Factory™", land: "SUPER NINTENDO WORLD™", description: "The primary destination for all things Mushroom Kingdom, from character plushies to themed apparel." },
-                { name: "Jurassic Outfitters", land: "Jurassic World", description: "Find apparel, dinosaur toys, and collectibles to commemorate your expedition into Jurassic World." },
-                { name: "TRANSFORMERS Supply Store", land: "Lower Lot", description: "Sells merchandise based on the popular Transformers film franchise." }
-            ]
-        };
+            <div id="filters" class="mb-8 flex flex-wrap justify-center gap-2">
+                <button data-filter="all" class="filter-btn px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 filter-active">All</button>
+                <button data-filter="Upper Lot" class="filter-btn px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 filter-inactive">Upper Lot</button>
+                <button data-filter="Lower Lot" class="filter-btn px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 filter-inactive">Lower Lot</button>
+                <button data-filter="Thrill" class="filter-btn px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 filter-inactive">Thrill</button>
+                <button data-filter="Family" class="filter-btn px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 filter-inactive">Family</button>
+                <button data-filter="Show" class="filter-btn px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 filter-inactive">Show</button>
+            </div>
 
-        const hotelData = [
-            { name: "Nite Inn on Ventura Blvd", icon: '🚶‍♂️', description: "Cheapest option within walking distance. Offers free parking and breakfast. Short walk to the free Universal shuttle." },
-            { name: "Best Western Plus Media Center Inn & Suites", icon: '🏊', description: "Located in Burbank (~1.2 miles away). Provides complimentary breakfast, a pool, and free Wi-Fi." },
-            { name: "Coast Anabelle Hotel", icon: '🚐', description: "A boutique hotel about 10 minutes away that offers a free shuttle to Universal Studios and free parking." },
-            { name: "Hotel Amarano Burbank-Hollywood", icon: '✨', description: "A luxury boutique option less than two miles from the park, close to Warner Bros. Studio as well." },
-            { name: "Comfort Inn & Suites Near Universal", icon: '☕', description: "A smoke-free hotel (~4 miles away) with free Wi-Fi and hot breakfast." },
-            { name: "Safari Inn, a Coast Hotel", icon: '🌴', description: "A 3-star property in Burbank offering a complimentary shuttle (reservations required) and free parking." }
-        ];
+            <div id="attractions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </section>
 
-        const attractionsGrid = document.getElementById('attractions-grid');
-        const filtersContainer = document.getElementById('filters');
-        const historyDetails = document.getElementById('history-details');
-        const citywalkGrid = document.getElementById('citywalk-shops-grid');
-        const inParkGrid = document.getElementById('in-park-shops-grid');
-        const hotelsGrid = document.getElementById('hotels-grid');
+        <section id="history" class="tab-content hidden fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">A Journey Through Time</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">From a humble 5-cent studio tour to a global entertainment powerhouse, Universal Studios Hollywood has a rich and innovative history. Explore the key milestones that shaped the park into the icon it is today. Click on points in the timeline to learn more about each event.</p>
+            </div>
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                <div class="chart-container">
+                    <canvas id="history-chart"></canvas>
+                </div>
+                <div id="history-details" class="mt-6 p-4 bg-stone-50 rounded-lg min-h-[100px] text-center flex items-center justify-center transition-all duration-300">
+                    <p class="text-stone-500">Click a point on the timeline to see details.</p>
+                </div>
+            </div>
+        </section>
 
-        function createAttractionCard(attraction) {
-            const card = document.createElement('div');
-            card.className = `attraction-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 fade-in`;
-            card.dataset.type = attraction.type;
-            card.dataset.lot = attraction.lot;
-            card.innerHTML = `
-                <div class="p-6">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 text-3xl mr-4">${attraction.icon}</div>
-                        <div class="flex-grow">
-                            <div class="uppercase tracking-wide text-xs text-amber-600 font-bold">${attraction.land}</div>
-                            <p class="block mt-1 text-lg leading-tight font-semibold text-stone-900">${attraction.name}</p>
-                            <p class="mt-2 text-stone-500 text-sm">${attraction.description}</p>
+        <section id="shops" class="tab-content hidden fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">Shop & Dine</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">Take a piece of the magic home with you. From exclusive collectibles in themed lands to the diverse offerings at Universal CityWalk, discover the perfect souvenir or meal to complete your visit.</p>
+            </div>
+            
+            <div>
+                <h3 class="text-2xl font-bold text-stone-800 mb-4 border-l-4 border-amber-500 pl-4">Universal CityWalk</h3>
+                <p class="text-stone-600 mb-6">The entertainment and shopping district just outside the park gates. It's the perfect start or end to your day, offering a wide array of stores and dining options.</p>
+                <div id="citywalk-shops-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"></div>
+            </div>
+
+            <div>
+                <h3 class="text-2xl font-bold text-stone-800 mb-4 border-l-4 border-amber-500 pl-4">Inside The Park</h3>
+                 <p class="text-stone-600 mb-6">Shopping is part of the adventure! These themed stores are seamlessly integrated into the park's lands, offering merchandise that extends the immersive experience.</p>
+                <div id="in-park-shops-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <section id="hotels" class="tab-content hidden fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">Plan Your Visit: Nearby Hotels</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">Find the perfect place to stay near the magic. Here are some affordable and convenient hotel options in the surrounding area, many offering helpful amenities like free shuttles and breakfast.</p>
+            </div>
+            <div id="hotels-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-stone-400 mt-12">
+        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>This interactive guide was created based on public research about Universal Studios Hollywood.</p>
+            <p>&copy; 2025 Interactive Experiences Inc. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const attractionsData = [
+                { name: "The World-Famous Studio Tour", land: "Studio Tour", type: "Family", lot: "Upper Lot", icon: 'Tram', description: "Go behind the scenes of a real working movie studio. Features King Kong 360 3-D, Fast & Furious – Supercharged, and the Jaws attack." },
+                { name: "Harry Potter and the Forbidden Journey™", land: "The Wizarding World of Harry Potter™", type: "Thrill", lot: "Upper Lot", icon: '⚡', description: "Soar above Hogwarts™ castle on a thrilling adventure, coming face-to-face with magical creatures. A mix of robotic arm technology and rich sets." },
+                { name: "Flight of the Hippogriff™", land: "The Wizarding World of Harry Potter™", type: "Family", lot: "Upper Lot", icon: '🦅', description: "A family-friendly outdoor roller coaster that spirals and dives around the pumpkin patch, and then swoops past Hagrid's hut." },
+                { name: "Despicable Me Minion Mayhem", land: "Minion Land", type: "Family", lot: "Upper Lot", icon: '🍌', description: "Join Gru, his daughters, and the mischievous Minions on a heartwarming and hilarious 3D motion-simulator ride." },
+                { name: "The Secret Life of Pets: Off the Leash!", land: "Minion Land", type: "Family", lot: "Upper Lot", icon: '🐶', description: "A charming dark ride where you become a stray puppy journeying through the streets of NYC to find your forever home." },
+                { name: "The Simpsons Ride™", land: "Springfield, U.S.A.", type: "Thrill", lot: "Upper Lot", icon: '🍩', description: "A wild motion simulator ride through Krustyland. Soar, float, and crash your way through with Homer, Marge, Bart, Lisa, and Maggie." },
+                { name: "WaterWorld", land: "WaterWorld", type: "Show", lot: "Upper Lot", icon: '🌊', description: "A tidal wave of explosive action! This live sea war spectacular features jet-ski stunts, perilous plunges, firefights, and a plane crash you have to see to believe." },
+                { name: "DreamWorks Theatre Featuring Kung Fu Panda", land: "Universal Plaza", type: "Show", lot: "Upper Lot", icon: '🐼', description: "A multi-sensory attraction using state-of-the-art visual effects and cutting-edge technology, including 360-degree surround sound and physical effects." },
+                { name: "Mario Kart™: Bowser's Challenge", land: "SUPER NINTENDO WORLD™", type: "Family", lot: "Lower Lot", icon: '🍄', description: "A groundbreaking augmented reality (AR) dark ride where you steer through iconic courses, collecting digital coins and throwing shells to defeat Team Bowser." },
+                { name: "Jurassic World - The Ride", land: "Jurassic World", type: "Thrill", lot: "Lower Lot", icon: '🦖', description: "A water ride through lush jungles inhabited by dinosaurs, culminating in a face-off with the Indominus Rex and an 84-foot plunge. Prepare to get soaked!" },
+                { name: "TRANSFORMERS™: The Ride-3D", land: "TRANSFORMERS Metrobase", type: "Thrill", lot: "Lower Lot", icon: '🤖', description: "An immersive, next-gen 3D thrill ride that blurs the line between fiction and reality. Battle alongside Optimus Prime to protect the AllSpark." },
+                { name: "Revenge of the Mummy: The Ride", land: "General", type: "Thrill", lot: "Lower Lot", icon: '💀', description: "Plunge into total darkness and face scarab beetles, fireballs, and an army of warrior mummies on this high-speed indoor roller coaster. (Currently closed for refurbishment)." }
+            ];
+
+            const historyData = [
+                { year: 1915, event: "Studio Opens to Public", description: "Carl Laemmle opens his studio for public tours, offering a behind-the-scenes look at filmmaking for just 5 cents." },
+                { year: 1930, event: "Original Tour Ends", description: "The first iteration of the public tour is discontinued due to the logistical challenges posed by the advent of sound in films." },
+                { year: 1964, event: "Modern Studio Tour Begins", description: "The modern tram tour is launched, incorporating staged events and marking the true beginning of the theme park experience." },
+                { year: 1991, event: "Lower Lot Expansion", description: "The Lower Lot opens, significantly expanding the park's footprint and connected by a massive series of escalators." },
+                { year: 1996, event: "Jurassic Park—The Ride Opens", description: "Revered as a 'game changer,' this immersive water ride sets new standards for themed attractions with its advanced animatronics." },
+                { year: 2008, event: "Major Backlot Fire", description: "A significant fire destroys two square blocks of the backlot, including the iconic King Kong attraction." },
+                { year: 2016, event: "The Wizarding World Opens", description: "The highly anticipated Wizarding World of Harry Potter opens, setting new standards for immersive themed lands." },
+                { year: 2023, event: "SUPER NINTENDO WORLD™", description: "A highly interactive and immersive land opens, featuring augmented reality rides and gamified experiences with Power-Up Bands." }
+            ];
+
+            const shopData = {
+                citywalk: [
+                    { name: "Universal Studios Store", category: "General Merchandise", description: "The main hub for a wide variety of movie and character-inspired apparel, toys, and souvenirs." },
+                    { name: "Dodgers Clubhouse Store", category: "Fan Gear", description: "The official store for Los Angeles Dodgers fan gear and apparel." },
+                    { name: "LINE FRIENDS SQUARE", category: "Specialty", description: "A vibrant store for BT21, LINE FRIENDS, and K-pop merchandise." },
+                    { name: "Sanrio® Smile Shop", category: "Specialty", description: "A supercute destination for sweet treats and merchandise featuring Hello Kitty and friends." },
+                    { name: "Voodoo Doughnut", category: "Dining/Specialty", description: "A popular spot for unique and delicious doughnuts, a treat in itself." }
+                ],
+                in_park: [
+                    { name: "Ollivanders™", land: "The Wizarding World of Harry Potter™", description: "Experience the magic as a wand chooses a wizard in this iconic, interactive shop." },
+                    { name: "Honeydukes™", land: "The Wizarding World of Harry Potter™", description: "A legendary wizarding sweets shop filled with Chocolate Frogs™, Bertie Bott's Every-Flavour Beans™, and more." },
+                    { name: "Dervish & Banges™", land: "The Wizarding World of Harry Potter™", description: "Sells magical supplies, Quidditch equipment, and Hogwarts house robes." },
+                    { name: "1-UP Factory™", land: "SUPER NINTENDO WORLD™", description: "The primary destination for all things Mushroom Kingdom, from character plushies to themed apparel." },
+                    { name: "Jurassic Outfitters", land: "Jurassic World", description: "Find apparel, dinosaur toys, and collectibles to commemorate your expedition into Jurassic World." },
+                    { name: "TRANSFORMERS Supply Store", land: "Lower Lot", description: "Sells merchandise based on the popular Transformers film franchise." }
+                ]
+            };
+
+            const hotelData = [
+                { name: "Nite Inn on Ventura Blvd", icon: '🚶‍♂️', description: "Cheapest option within walking distance. Offers free parking and breakfast. Short walk to the free Universal shuttle." },
+                { name: "Best Western Plus Media Center Inn & Suites", icon: '🏊', description: "Located in Burbank (~1.2 miles away). Provides complimentary breakfast, a pool, and free Wi-Fi." },
+                { name: "Coast Anabelle Hotel", icon: '🚐', description: "A boutique hotel about 10 minutes away that offers a free shuttle to Universal Studios and free parking." },
+                { name: "Hotel Amarano Burbank-Hollywood", icon: '✨', description: "A luxury boutique option less than two miles from the park, close to Warner Bros. Studio as well." },
+                { name: "Comfort Inn & Suites Near Universal", icon: '☕', description: "A smoke-free hotel (~4 miles away) with free Wi-Fi and hot breakfast." },
+                { name: "Safari Inn, a Coast Hotel", icon: '🌴', description: "A 3-star property in Burbank offering a complimentary shuttle (reservations required) and free parking." }
+            ];
+
+            const attractionsGrid = document.getElementById('attractions-grid');
+            const filtersContainer = document.getElementById('filters');
+            const historyDetails = document.getElementById('history-details');
+            const citywalkGrid = document.getElementById('citywalk-shops-grid');
+            const inParkGrid = document.getElementById('in-park-shops-grid');
+            const hotelsGrid = document.getElementById('hotels-grid');
+
+            function createAttractionCard(attraction) {
+                const card = document.createElement('div');
+                card.className = `attraction-card bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 fade-in`;
+                card.dataset.type = attraction.type;
+                card.dataset.lot = attraction.lot;
+                card.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 text-3xl mr-4">${attraction.icon}</div>
+                            <div class="flex-grow">
+                                <div class="uppercase tracking-wide text-xs text-amber-600 font-bold">${attraction.land}</div>
+                                <p class="block mt-1 text-lg leading-tight font-semibold text-stone-900">${attraction.name}</p>
+                                <p class="mt-2 text-stone-500 text-sm">${attraction.description}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${attraction.lot}</span>
+                            <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${attraction.type}</span>
                         </div>
                     </div>
-                    <div class="mt-4 flex space-x-2">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${attraction.lot}</span>
-                        <span class="inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${attraction.type}</span>
+                `;
+                return card;
+            }
+            
+            function createShopCard(shop) {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg';
+                card.innerHTML = `
+                    <h4 class="font-bold text-stone-800">${shop.name}</h4>
+                    <p class="text-sm text-amber-700 font-semibold mb-2">${shop.land || shop.category}</p>
+                    <p class="text-stone-600 text-sm">${shop.description}</p>
+                `;
+                return card;
+            }
+
+            function createHotelCard(hotel) {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg flex items-start';
+                card.innerHTML = `
+                    <div class="text-3xl mr-4">${hotel.icon}</div>
+                    <div>
+                        <h4 class="font-bold text-stone-800">${hotel.name}</h4>
+                        <p class="text-stone-600 text-sm">${hotel.description}</p>
                     </div>
-                </div>
-            `;
-            return card;
-        }
-        
-        function createShopCard(shop) {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg';
-            card.innerHTML = `
-                <h4 class="font-bold text-stone-800">${shop.name}</h4>
-                <p class="text-sm text-amber-700 font-semibold mb-2">${shop.land || shop.category}</p>
-                <p class="text-stone-600 text-sm">${shop.description}</p>
-            `;
-            return card;
-        }
-
-        function createHotelCard(hotel) {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg flex items-start';
-            card.innerHTML = `
-                <div class="text-3xl mr-4">${hotel.icon}</div>
-                <div>
-                    <h4 class="font-bold text-stone-800">${hotel.name}</h4>
-                    <p class="text-stone-600 text-sm">${hotel.description}</p>
-                </div>
-            `;
-            return card;
-        }
-
-        function renderAttractions(filter = 'all') {
-            attractionsGrid.innerHTML = '';
-            attractionsData
-                .filter(attraction => {
-                    if (filter === 'all') return true;
-                    return attraction.type === filter || attraction.lot === filter;
-                })
-                .forEach(attraction => {
-                    attractionsGrid.appendChild(createAttractionCard(attraction));
-                });
-        }
-        
-        function renderShops() {
-            citywalkGrid.innerHTML = '';
-            inParkGrid.innerHTML = '';
-            shopData.citywalk.forEach(shop => citywalkGrid.appendChild(createShopCard(shop)));
-            shopData.in_park.forEach(shop => inParkGrid.appendChild(createShopCard(shop)));
-        }
-        
-        function renderHotels() {
-            hotelsGrid.innerHTML = '';
-            hotelData.forEach(hotel => hotelsGrid.appendChild(createHotelCard(hotel)));
-        }
-
-        filtersContainer.addEventListener('click', (e) => {
-            const clickedButton = e.target.closest('.filter-btn');
-            if (clickedButton) {
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.classList.remove('filter-active');
-                    btn.classList.add('filter-inactive');
-                });
-                clickedButton.classList.add('filter-active');
-                clickedButton.classList.remove('filter-inactive');
-                renderAttractions(clickedButton.dataset.filter);
+                `;
+                return card;
             }
-        });
 
-        const tabs = document.querySelectorAll('.nav-btn');
-        const mobileNav = document.getElementById('mobile-nav');
-        const tabContents = document.querySelectorAll('.tab-content');
+            function renderAttractions(filter = 'all') {
+                attractionsGrid.innerHTML = '';
+                attractionsData
+                    .filter(attraction => {
+                        if (filter === 'all') return true;
+                        return attraction.type === filter || attraction.lot === filter;
+                    })
+                    .forEach(attraction => {
+                        attractionsGrid.appendChild(createAttractionCard(attraction));
+                    });
+            }
+            
+            function renderShops() {
+                citywalkGrid.innerHTML = '';
+                inParkGrid.innerHTML = '';
+                shopData.citywalk.forEach(shop => citywalkGrid.appendChild(createShopCard(shop)));
+                shopData.in_park.forEach(shop => inParkGrid.appendChild(createShopCard(shop)));
+            }
+            
+            function renderHotels() {
+                hotelsGrid.innerHTML = '';
+                hotelData.forEach(hotel => hotelsGrid.appendChild(createHotelCard(hotel)));
+            }
 
-        function switchTab(tabName) {
+            filtersContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-btn')) {
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('filter-active');
+                        btn.classList.add('filter-inactive');
+                    });
+                    e.target.classList.add('filter-active');
+                    e.target.classList.remove('filter-inactive');
+                    renderAttractions(e.target.dataset.filter);
+                }
+            });
+
+            const tabs = document.querySelectorAll('.nav-btn');
+            const mobileNav = document.getElementById('mobile-nav');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function switchTab(tabName) {
+                tabs.forEach(tab => {
+                    const isActive = tab.dataset.tab === tabName;
+                    tab.classList.toggle('nav-active', isActive);
+                    tab.classList.toggle('nav-inactive', !isActive);
+                });
+                tabContents.forEach(content => {
+                    content.classList.toggle('hidden', content.id !== tabName);
+                });
+                if (mobileNav.value !== tabName) {
+                    mobileNav.value = tabName;
+                }
+            }
+
             tabs.forEach(tab => {
-                const isActive = tab.dataset.tab === tabName;
-                tab.classList.toggle('nav-active', isActive);
-                tab.classList.toggle('nav-inactive', !isActive);
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
             });
-            tabContents.forEach(content => {
-                content.classList.toggle('hidden', content.id !== tabName);
-            });
-            if (mobileNav.value !== tabName) {
-                mobileNav.value = tabName;
-            }
-        }
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => switchTab(tab.dataset.tab));
-        });
+            mobileNav.addEventListener('change', (e) => switchTab(e.target.value));
 
-        mobileNav.addEventListener('change', (e) => switchTab(e.target.value));
-
-        let historyChart = null;
-        function renderHistoryChart() {
-            if (historyChart) {
-                historyChart.destroy();
-            }
-            const ctx = document.getElementById('history-chart').getContext('2d');
-            historyChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: historyData.map(item => item.year),
-                    datasets: [{
-                        label: 'Key Milestones',
-                        data: historyData.map((item, index) => ({ x: item.year, y: index })),
-                        borderColor: '#f59e0b',
-                        backgroundColor: '#f59e0b',
-                        fill: false,
-                        tension: 0.1,
-                        pointRadius: 6,
-                        pointHoverRadius: 10,
-                        pointBackgroundColor: '#ffffff',
-                        pointBorderColor: '#f59e0b',
-                        pointBorderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            enabled: true,
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                title: function(tooltipItems) {
-                                    const index = tooltipItems[0].dataIndex;
-                                    return `${historyData[index].year}: ${historyData[index].event}`;
-                                },
-                                label: function(tooltipItem) {
-                                    return '';
+            let historyChart = null;
+            function renderHistoryChart() {
+                if (historyChart) {
+                    historyChart.destroy();
+                }
+                const ctx = document.getElementById('history-chart').getContext('2d');
+                historyChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: historyData.map(item => item.year),
+                        datasets: [{
+                            label: 'Key Milestones',
+                            data: historyData.map((item, index) => ({ x: item.year, y: index })),
+                            borderColor: '#f59e0b',
+                            backgroundColor: '#f59e0b',
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 6,
+                            pointHoverRadius: 10,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#f59e0b',
+                            pointBorderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: true,
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const index = tooltipItems[0].dataIndex;
+                                        return `${historyData[index].year}: ${historyData[index].event}`;
+                                    },
+                                    label: function(tooltipItem) {
+                                        return '';
+                                    }
                                 }
                             }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            display: false
                         },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 10
+                        scales: {
+                            y: {
+                                display: false
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 10
+                                    }
                                 }
                             }
+                        },
+                        onClick: (e) => {
+                            const points = historyChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
+                            if (points.length) {
+                                const firstPoint = points[0];
+                                const data = historyData[firstPoint.index];
+                                historyDetails.innerHTML = `
+                                    <div class="text-left w-full">
+                                        <p class="font-bold text-lg text-amber-700">${data.year}: ${data.event}</p>
+                                        <p class="mt-1 text-stone-600">${data.description}</p>
+                                    </div>
+                                `;
+                            }
+                        },
+                        onHover: (event, chartElement) => {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
                         }
-                    },
-                    onClick: (e) => {
-                        const points = historyChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true);
-                        if (points.length) {
-                            const firstPoint = points[0];
-                            const data = historyData[firstPoint.index];
-                            historyDetails.innerHTML = `
-                                <div class="text-left w-full">
-                                    <p class="font-bold text-lg text-amber-700">${data.year}: ${data.event}</p>
-                                    <p class="mt-1 text-stone-600">${data.description}</p>
-                                </div>
-                            `;
-                        }
-                    },
-                    onHover: (event, chartElement) => {
-                        event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
                     }
-                }
-            });
-        }
+                });
+            }
 
-        const historyObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    renderHistoryChart();
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
+            const historyObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        renderHistoryChart();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
 
-        historyObserver.observe(document.getElementById('history'));
+            historyObserver.observe(document.getElementById('history'));
 
-        renderAttractions();
-        renderShops();
-        renderHotels();
-    });
-</script>
+            renderAttractions();
+            renderShops();
+            renderHotels();
+        });
+    </script>
+</body>
+</html>
