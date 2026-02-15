@@ -94,11 +94,11 @@ h1, h2 { /* Apply common heading styles */
     cursor: not-allowed;
     border-color: #222222;
 }
-/* This targets the colons specifically */
-.display span:nth-child(2), 
-.countdown-display span:nth-child(2) {
-    margin-left: 40px;  /* Nudge right */
-    margin-right: -10px; /* Pull the next numbers closer if needed */
+/* This forces ONLY the colon to move, no matter where it sits */
+.display span:nth-of-type(2), 
+.countdown-display span:nth-of-type(2) {
+    margin-left: 60px !important;  /* Bigger nudge */
+    margin-right: 10px !important;
+    display: inline-block;
 }
-
 /* Specific Stopwatch button colors
