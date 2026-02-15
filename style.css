@@ -1,0 +1,104 @@
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column; /* Allow both stopwatch and timer to stack vertically */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #000000; /* Pure black background */
+    color: #f0f0f0; /* Off-white text for high contrast */
+    text-align: center;
+    overflow-y: auto;
+    padding: 20px 0; /* Add some padding for top/bottom */
+}
+
+.container, .countdown-container { /* Apply common container styles */
+    background-color: #1a1a1a;
+    padding: 40px;
+    border-radius: 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 420px;
+    border: 1px solid #333333;
+    margin: 25px 0; /* Consistent margin for both containers */
+}
+
+h1, h2 { /* Apply common heading styles */
+    color: #ffffff;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.display, .countdown-display { /* Apply common display styles */
+    font-size: 4.5em;
+    font-family: 'Roboto Mono', monospace;
+    margin-bottom: 45px;
+    background-color: #0d0d0d;
+    padding: 20px 25px;
+    border-radius: 0;
+    color: #ffffff; /* White numbers */
+    letter-spacing: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    font-weight: 400;
+    border: 1px solid #222222;
+}
+
+.display span, .countdown-display span {
+    min-width: 55px;
+    text-align: center;
+}
+
+#milliseconds {
+    font-size: 0.4em;
+    vertical-align: super;
+    margin-left: 10px;
+    color: #888888;
+}
+
+.controls, .countdown-controls { /* Apply common control bar styles */
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.controls button, .countdown-controls button { /* Apply common button styles */
+    background-color: green;
+    color: white;
+    border: 1px solid #555555;
+    padding: 20px 40px;
+    margin: 0;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.controls button:hover, .countdown-controls button:hover {
+    background-color: #555555;
+    border-color: #aaaaaa;
+    color: #ffffff;
+}
+
+.controls button:disabled, .countdown-controls button:disabled {
+    background-color: #222222;
+    color: #666666;
+    cursor: not-allowed;
+    border-color: #222222;
+}
+/* This targets the colons specifically */
+.display span:nth-child(2), 
+.countdown-display span:nth-child(2) {
+    margin-left: 15px;  /* Nudge right */
+    margin-right: -10px; /* Pull the next numbers closer if needed */
+}
+
+/* Specific Stopwatch button colors
