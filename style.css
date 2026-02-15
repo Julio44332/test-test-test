@@ -97,7 +97,7 @@ h1, h2 { /* Apply common heading styles */
 /* This targets the colons specifically */
 .display span:nth-child(2), 
 .countdown-display span:nth-child(2) {
-    margin-left: 15px;  /* Nudge right */
+    margin-left: 40px;  /* Nudge right */
     margin-right: -10px; /* Pull the next numbers closer if needed */
 }
 
