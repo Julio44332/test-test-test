@@ -1,111 +1,46 @@
-<style>
-body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    display: flex;
-    flex-direction: column; 
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #000000; 
-    color: #f0f0f0; 
-    text-align: center;
-    overflow-y: auto; /* Fixed the typo here */
-    padding: 20px 0; 
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Timer App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Stopwatch</h1>
+        <div class="display">
+            <span id="hours">00</span>:
+            <span id="minutes">00</span>:
+            <span id="seconds">00</span>.<span id="milliseconds">000</span>
+        </div>
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="stopBtn">Stop</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+    </div>
 
-.container, .countdown-container { 
-    background-color: #1a1a1a;
-    padding: 40px;
-    border-radius: 0;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 420px;
-    border: 1px solid #333333;
-    margin: 25px 0; 
-}
+    <div class="countdown-container">
+        <h2>Countdown Timer</h2>
+        <div class="set-time">
+            <input type="number" id="hoursInput" placeholder="HH" min="0" max="99"> :
+            <input type="number" id="minutesInput" placeholder="MM" min="0" max="59"> :
+            <input type="number" id="secondsInput" placeholder="SS" min="0" max="59">
+            <button id="setTimeBtn">Set Time</button>
+        </div>
+        <div class="display countdown-display">
+            <span id="countdownHours">00</span>:
+            <span id="countdownMinutes">00</span>:
+            <span id="countdownSeconds">00</span>
+        </div>
+        <div class="controls countdown-controls">
+            <button id="countdownStartBtn">Start</button>
+            <button id="countdownPauseBtn">Pause</button>
+            <button id="countdownResetBtn">Reset</button>
+        </div>
+    </div>
 
-h1, h2 { 
-    color: #ffffff;
-    margin-bottom: 30px;
-    font-size: 2.5em;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.display, .countdown-display { 
-    font-size: 4.5em;
-    font-family: 'Roboto Mono', monospace;
-    margin-bottom: 45px;
-    background-color: #0d0d0d;
-    padding: 20px 25px;
-    border-radius: 0;
-    color: #ffffff; 
-    letter-spacing: 3px;
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    font-weight: 400;
-    border: 1px solid #222222;
-}
-
-.display span, .countdown-display span {
-    min-width: 55px;
-    text-align: center;
-}
-
-/* THE COLON FIX: This pushes the dots to the right */
-.display span:nth-child(2), 
-.countdown-display span:nth-child(2) {
-    margin-left: 20px; 
-}
-
-#milliseconds {
-    font-size: 0.4em;
-    vertical-align: super;
-    margin-left: 10px;
-    color: #888888;
-}
-
-.controls, .countdown-controls { 
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.controls button, .countdown-controls button { 
-    background-color: green;
-    color: white;
-    border: 1px solid #555555;
-    padding: 20px 40px;
-    margin: 0;
-    border-radius: 0;
-    cursor: pointer;
-    font-size: 1.3em;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.controls button:hover, .countdown-controls button:hover {
-    background-color: #555555;
-    border-color: #aaaaaa;
-    color: #ffffff;
-}
-
-.controls button:disabled, .countdown-controls button:disabled {
-    background-color: #222222;
-    color: #666666;
-    cursor: not-allowed;
-    border-color: #222222;
-}
-  /* This targets the colon specifically */
-.display span:nth-child(even), 
-.countdown-display span:nth-child(even) {
-    margin-left: 10px;  /* Increase this number to move it more to the right */
-    margin-right: -5px; /* Optional: tightens the gap on the other side */
-    min-width: auto;    /* Makes sure the colon doesn't take up as much space as the numbers */
-}
-</style>
+    <script src="script.js"></script>
+</body>
+</html>
