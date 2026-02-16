@@ -96,8 +96,8 @@ h1, h2 { /* Apply common heading styles */
 }
 /* Put this at the bottom of style.css */
 .colon {
-    margin-left: 20px;  /* Nudge it right */
-    margin-right: 10px; /* Space after it */
-    display: inline-block; 
+    position: relative
+    left: 20px;
+    display: inline-block
 }
 /* Specific Stopwatch button colors
