@@ -96,8 +96,7 @@ h1, h2 { /* Apply common heading styles */
 }
 /* Put this at the bottom of style.css */
 .colon {
-    position: relative
-    left: 20px;
-    display: inline-block
+    display: inline-block;
+    transform: translateX(18px);
 }
 /* Specific Stopwatch button colors
