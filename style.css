@@ -124,5 +124,19 @@ h1, h2 { /* Apply common heading styles */
 #minutes, #seconds {
     padding-left: 10px !important;  /* This keeps the numbers from being too close to the colon on the left */
 }
+/* Move the colons to the right */
+#hours, #minutes {
+    padding-right: 18px !important;
+}
 
+/* Give the colons a tiny bit of room on their left side too */
+#minutes, #seconds {
+    padding-left: 6px !important;
+}
+
+/* Ensure the box doesn't grow or shrink weirdly */
+.display, .countdown-display {
+    gap: 0 !important; 
+    box-sizing: border-box;
+}
 /* Specific Stopwatch button colors
