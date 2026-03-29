@@ -14,9 +14,9 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5)
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     border: 1px solid #333333;
-    margin: 25px 0; /* Consistent margin for both containers */
+    margin: 0 auto; /* Consistent margin for both containers */
 }
 
 h1, h2 { /* Apply common heading styles */
