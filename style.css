@@ -93,6 +93,12 @@ h1, h2 { /* Apply common heading styles */
     color: #666666;
     cursor: not-allowed;
     border-color: #222222;
+    .colon {
+    display: inline-block; /* Makes it "movable" */
+    margin-left: 8px;      /* Pushes it 8px to the RIGHT */
+    margin-right: 4px;     /* Gives the next number some breathing room */
+    color: #ffffff;        /* Keeps it white */
+}
 }
 
 /* Specific Stopwatch button colors
