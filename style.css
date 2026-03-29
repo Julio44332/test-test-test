@@ -1,11 +1,10 @@
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    margin: 0;
-    background-color: #000000; /* Pure black background */
-    color: #f0f0f0; /* Off-white text */
-    text-align: center;
-    height: 100vh;
-    overflow: hidden; /* This stops the page from being one long messy list */
+    background-color: #000000;
+}
+
+/* Then, make sure your specific boxes stay grey so they don't disappear */
+.container, .countdown-container, .display, .countdown-display {
+    background-color: #1a1a1a !important;
 }
 
 .container, .countdown-container { /* Apply common container styles */
