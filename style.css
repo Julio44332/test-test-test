@@ -13,7 +13,8 @@ body {
     border-radius: 0;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 420px;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5)
     border: 1px solid #333333;
     margin: 25px 0; /* Consistent margin for both containers */
 }
@@ -87,6 +88,15 @@ h1, h2 { /* Apply common heading styles */
     color: #666666;
     cursor: not-allowed;
     border-color: #222222;
+}
+.panel {
+    height: 100vh;           /* Makes each section full screen */
+    width: 100%;
+    display: flex;           /* Turns on the centering 'engine' */
+    justify-content: center; /* Centers the box horizontally */
+    align-items: center;     /* Centers the box vertically */
+    scroll-snap-align: start;/* Makes the scroll 'snap' work */
+    background-color: #000;  /* Keeps the background black */
 }
 /* Put this at the bottom of style.css */
 .colon {
