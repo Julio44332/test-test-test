@@ -1,10 +1,16 @@
 body {
-    background-color: #000000;
-}
-
-/* Then, make sure your specific boxes stay grey so they don't disappear */
-.container, .countdown-container, .display, .countdown-display {
-    background-color: #1a1a1a !important;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column; /* Allow both stopwatch and timer to stack vertically */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #000000; /* Pure black background */
+    color: #f0f0f0; /* Off-white text for high contrast */
+    text-align: center;
+    overflow-y: atuo;
+    padding: 20px 0; /* Add some padding for top/bottom */
 }
 
 .container, .countdown-container { /* Apply common container styles */
@@ -13,10 +19,9 @@ body {
     border-radius: 0;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 400px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    max-width: 420px;
     border: 1px solid #333333;
-    margin: 0 auto; /* Consistent margin for both containers */
+    margin: 25px 0; /* Consistent margin for both containers */
 }
 
 h1, h2 { /* Apply common heading styles */
@@ -89,18 +94,5 @@ h1, h2 { /* Apply common heading styles */
     cursor: not-allowed;
     border-color: #222222;
 }
-.panel {
-    height: 100vh;           /* Makes each section full screen */
-    width: 100%;
-    display: flex;           /* Turns on the centering 'engine' */
-    justify-content: center; /* Centers the box horizontally */
-    align-items: center;     /* Centers the box vertically */
-    scroll-snap-align: start;/* Makes the scroll 'snap' work */
-    background-color: #000;  /* Keeps the background black */
-}
-/* Put this at the bottom of style.css */
-.colon {
-    display: inline-block;
-    transform: translateX(18px);
-}
+
 /* Specific Stopwatch button colors
