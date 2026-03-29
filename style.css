@@ -99,6 +99,20 @@ h1, h2 { /* Apply common heading styles */
     margin-right: 4px;     /* Gives the next number some breathing room */
     color: #ffffff;        /* Keeps it white */
 }
+/* This pushes the first colon (after hours) to the right */
+#hours {
+    margin-right: 15px; 
+}
+
+/* This pushes the second colon (after minutes) to the right */
+#minutes {
+    margin-right: 15px;
+}
+
+/* This adds a little space BEFORE the minutes and seconds 
+   so the colon isn't squashed */
+#minutes, #seconds {
+    margin-left: 5px;
 }
 
 /* Specific Stopwatch button colors
