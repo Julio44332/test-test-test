@@ -7,34 +7,45 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Stopwatch</h1>
-        <div class="display">
-            <span id="hours">00</span><span class="colon">:</span>
-            <span id="minutes">00</span><span class="colon">:</span>
-            <span id="seconds">00</span><span class="colon">.</span><span id="milliseconds">000</span>
-        </div>
-        <div class="controls">
-            <button id="startBtn">Start</button>
-            <button id="stopBtn">Stop</button>
-            <button id="resetBtn">Reset</button>
-        </div>
-    </div>
+<div class="scroll-wrapper"> 
 
-    <div class="countdown-container">
-        <h2>Countdown Timer</h2>
-        <div class="display countdown-display">
-            <span id="countdownHours">00</span>:
-            <span id="countdownMinutes">00</span>:
-            <span id="countdownSeconds">00</span>
-        </div>
-        <div class="controls countdown-controls">
-            <button id="countdownStartBtn">Start</button>
-            <button id="countdownPauseBtn">Pause</button>
-            <button id="countdownResetBtn">Reset</button>
-        </div>
-    </div>
+        <section class="panel">
+            <div class="container">
+                <h1>Stopwatch</h1>
+                <div class="display">
+                    <span id="hours">00</span><span class="colon">:</span>
+                    <span id="minutes">00</span><span class="colon">:</span>
+                    <span id="seconds">00</span><span class="colon">.</span><span id="milliseconds">000</span>
+                </div>
+                <div class="controls">
+                    <button id="startBtn">Start</button>
+                    <button id="stopBtn">Stop</button>
+                    <button id="resetBtn">Reset</button>
+                </div>
+            </div>
+        </section>
 
-    <script src="script.js"></script>
+        <section class="panel">
+            <div class="countdown-container">
+                <h2>Countdown Timer</h2>
+                <div class="set-time">
+                    <input type="number" id="hoursInput" placeholder="HH"> :
+                    <input type="number" id="minutesInput" placeholder="MM"> :
+                    <input type="number" id="secondsInput" placeholder="SS">
+                    <button id="setTimeBtn">Set Time</button>
+                </div>
+                <div class="display countdown-display">
+                    <span id="countdownHours">00</span><span class="colon">:</span>
+                    <span id="countdownMinutes">00</span><span class="colon">:</span>
+                    <span id="countdownSeconds">00</span>
+                </div>
+                <div class="controls countdown-controls">
+                    <button id="countdownStartBtn">Start</button>
+                    <button id="countdownPauseBtn">Pause</button>
+                    <button id="countdownResetBtn">Reset</button>
+                </div>
+            </div>
+        </section>
+    </div>
 </body>
 </html>
