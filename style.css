@@ -114,5 +114,8 @@ h1, h2 { /* Apply common heading styles */
 #minutes, #seconds {
     margin-left: 5px;
 }
+    #hours, #minutes {
+    margin-right: 15px; 
+}
 
 /* Specific Stopwatch button colors
