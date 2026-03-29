@@ -117,5 +117,12 @@ h1, h2 { /* Apply common heading styles */
     #hours, #minutes {
     margin-right: 15px; 
 }
+    #hours, #minutes {
+    padding-right: 20px !important; /* This pushes the colon to the right */
+}
+
+#minutes, #seconds {
+    padding-left: 10px !important;  /* This keeps the numbers from being too close to the colon on the left */
+}
 
 /* Specific Stopwatch button colors
